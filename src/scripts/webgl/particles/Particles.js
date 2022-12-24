@@ -41,7 +41,7 @@ export default class Particles {
 		if (discard) {
 			// discard pixels darker than threshold #22
 			numVisible = 0;
-			threshold = 34;
+			threshold = 0;
 
 			const img = this.texture.image;
 			const canvas = document.createElement('canvas');
@@ -64,7 +64,7 @@ export default class Particles {
 
 		const uniforms = {
 			uTime: { value: 0 },
-			uRandom: { value: 1.0 },
+			uRandom: { value: 10.0 },
 			uDepth: { value: 2.0 },
 			uSize: { value: 0.0 },
 			uTextureSize: { value: new THREE.Vector2(this.width, this.height) },
@@ -135,7 +135,7 @@ export default class Particles {
 
 	initHitArea() {
 		const geometry = new THREE.PlaneGeometry(this.width, this.height, 1, 1);
-		const material = new THREE.MeshBasicMaterial({ color: 0xFFFFFF, wireframe: true, depthTest: false });
+		const material = new THREE.MeshBasicMaterial({ color: 0x000000, wireframe: true, depthTest: false });
 		material.visible = false;
 		this.hitArea = new THREE.Mesh(geometry, material);
 		this.container.add(this.hitArea);
@@ -168,23 +168,27 @@ export default class Particles {
 		this.object3D.material.uniforms.uTime.value += delta;
 	}
 
-	show(time = 1.0) {
+	show(time = 0.01) {
 		// reset
-		TweenLite.fromTo(this.object3D.material.uniforms.uSize, time, { value: 0.5 }, { value: 1.5 });
-		TweenLite.to(this.object3D.material.uniforms.uRandom, time, { value: 2.0 });
-		TweenLite.fromTo(this.object3D.material.uniforms.uDepth, time * 1.5, { value: 40.0 }, { value: 4.0 });
+		TweenLite.set(this.object3D.material.uniforms.uSize, { value: 1.5 });
+		TweenLite.set(this.object3D.material.uniforms.uRandom, { value: 2.0 });
+		TweenLite.set(this.object3D.material.uniforms.uDepth, { value: 4.0 });
 
 		this.addListeners();
 	}
 
-	hide(_destroy, time = 0.8) {
+	hide(_destroy, time = 0.01) {
 		return new Promise((resolve, reject) => {
-			TweenLite.to(this.object3D.material.uniforms.uRandom, time, { value: 5.0, onComplete: () => {
-				if (_destroy) this.destroy();
+
+
+			TweenLite.set(this.object3D.material.uniforms.uRandom, { value: 5.0, onComplete: () => {
+				//if (_destroy) this.destroy();
 				resolve();
 			} });
-			TweenLite.to(this.object3D.material.uniforms.uDepth, time, { value: -20.0, ease: Quad.easeIn });
-			TweenLite.to(this.object3D.material.uniforms.uSize, time * 0.8, { value: 0.0 });
+
+			
+			TweenLite.set(this.object3D.material.uniforms.uDepth,  { value: -20.0, ease: Quad.easeIn });
+			TweenLite.set(this.object3D.material.uniforms.uSize,  { value: 0.0 });
 
 			this.removeListeners();
 		});

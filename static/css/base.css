@@ -11,7 +11,7 @@ article,aside,details,figcaption,figure,footer,header,hgroup,main,nav,section,su
 
 body {
 	--color-text: #fff;
-	--color-bg: #0e0e0f;
+	--color-bg: #ffffff;
 	--color-link: #EE9A00;
 	--color-link-hover: #8e5c00;
 	color: var(--color-text);
